@@ -2,6 +2,7 @@
 
 var request = require('request');
 var fs = require('fs');
+var wallpaper = require('wallpaper');
 
 /**
  * Download a file and store it on the filesystem.
@@ -9,6 +10,15 @@ var fs = require('fs');
 var download = function (uri, filename, callback){
     request.head(uri, function(err, res, body){
         request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
+};
+
+/**
+ * Replace the current wallpaper with the one in parameter.
+ */
+var setWallpaper = function (wallpaperPath) {
+    wallpaper.set(wallpaperPath, function (err) {
+        console.log('Wallpaper changed');
     });
 };
 
@@ -46,14 +56,17 @@ var getBingWallpaper = function (done) {
 var currentDate = new Date().toISOString().substr(0, 10);
 var wallpaperPath = 'wallpapers/' + currentDate + '.jpg';
 
+// We don't download twice the same wallpaper
 if (fs.existsSync(wallpaperPath)) {
     console.log('Today\'s wallpaper already exists');
+    setWallpaper(wallpaperPath);
 }
 else {
     getBingWallpaper(function(err, wallpaperUrl) {
 
         download(wallpaperUrl,  wallpaperPath, function() {
             console.log('Wallpaper saved.');
+            setWallpaper(wallpaperPath);
         });
     });
 }
