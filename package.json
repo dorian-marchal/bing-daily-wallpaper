@@ -1,0 +1,23 @@
+{
+  "name": "bing-wallpaper",
+  "version": "1.0.0",
+  "description": "A simple node script to run at boot time that set your wallpaper to the Bing image of the day.",
+  "main": "bw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dorian-marchal/bing-wallpaper.git"
+  },
+  "author": "dorian-marchal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dorian-marchal/bing-wallpaper/issues"
+  },
+  "homepage": "https://github.com/dorian-marchal/bing-wallpaper",
+  "dependencies": {
+    "request": "^2.55.0",
+    "wallpaper": "^1.0.0"
+  }
+}
