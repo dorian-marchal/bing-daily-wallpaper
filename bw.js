@@ -54,7 +54,7 @@ var getBingWallpaper = function (done) {
 
 // Today's wallpaper path
 var currentDate = new Date().toISOString().substr(0, 10);
-var wallpaperPath = 'wallpapers/' + currentDate + '.jpg';
+var wallpaperPath = __dirname + '/wallpapers/' + currentDate + '.jpg';
 
 // We don't download twice the same wallpaper
 if (fs.existsSync(wallpaperPath)) {
