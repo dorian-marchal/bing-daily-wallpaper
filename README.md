@@ -17,6 +17,6 @@ make install
 node bw.js
 ```
 
-You can run this command at boot time if you want to change your wallpaper everyday : `node /path/to/bing-wallpaper`.
+You can run this command at boot time if you want to change your wallpaper everyday : `node /path/to/bing-wallpaper/bw.js`.
 
 All the downloaded wallpapers are stored in `/path/to/bing-wallpaper/wallpapers/yyyy-mm-dd.jpg`.
