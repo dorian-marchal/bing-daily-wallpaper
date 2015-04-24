@@ -18,7 +18,7 @@ var download = function (uri, filename, callback){
  */
 var setWallpaper = function (wallpaperPath) {
     wallpaper.set(wallpaperPath, function (err) {
-        console.log('Wallpaper changed');
+        console.log('Wallpaper updated.');
     });
 };
 
@@ -30,7 +30,7 @@ var getBingWallpaper = function (done) {
     request('http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1', function (error, response, body) {
 
         if (error || response.statusCode !== 200) {
-            done(new Error('Error while accessing the Bing API'));
+            done(new Error('Error while accessing the Bing API.'));
             return;
         }
 
@@ -38,7 +38,7 @@ var getBingWallpaper = function (done) {
             var res = JSON.parse(body);
 
             if (typeof res.images === 'undefined' || res.images.length === 0) {
-                done(new Error('Bad format for Bing API response'));
+                done(new Error('Bad format for Bing API response.'));
             }
 
             var imageUrl = 'http://bing.com' + res.images[0].url;
@@ -58,10 +58,12 @@ var wallpaperPath = 'wallpapers/' + currentDate + '.jpg';
 
 // We don't download twice the same wallpaper
 if (fs.existsSync(wallpaperPath)) {
-    console.log('Today\'s wallpaper already exists');
+    console.log('Today\'s wallpaper already exists.');
     setWallpaper(wallpaperPath);
 }
 else {
+    console.log('Dowloading wallpaper in ' + wallpaperPath + '...');
+
     getBingWallpaper(function(err, wallpaperUrl) {
 
         download(wallpaperUrl,  wallpaperPath, function() {
