@@ -1,3 +1,7 @@
+/wallpapers/*.jpg
+
+
+# ---- Node specific gitignore ----
 # Logs
 logs
 *.log
