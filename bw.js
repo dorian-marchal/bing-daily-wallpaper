@@ -3,6 +3,7 @@
 var request = require('request');
 var fs = require('fs');
 var wallpaper = require('wallpaper');
+var notifier = require('node-notifier');
 var argv = require('minimist')(process.argv.slice(2));
 
 /**
@@ -80,7 +81,10 @@ else {
 
                 // If --notify is passed, we show the copyright
                 if (argv.notify) {
-                    console.log(wallpaper.copyright);
+                    notifier.notify({
+                        title: 'Wallpaper copyright',
+                        message: wallpaper.copyright,
+                    });
                 }
             });
         });
