@@ -4,6 +4,11 @@ var request = require('request');
 var fs = require('fs');
 var wallpaper = require('wallpaper');
 var notifier = require('node-notifier');
+
+var getUserHome = function () {
+    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+};
+
 /**
  * Download a file and store it on the filesystem.
  */
@@ -16,11 +21,11 @@ var download = function (uri, filename, callback){
 /**
  * Replace the current wallpaper with the one in parameter.
  */
-var setWallpaper = function (wallpaperPath, done) {
+var setWallpaper = function (wallPath, done) {
 
     done = done || function () {};
 
-    wallpaper.set(wallpaperPath, function (err) {
+    wallpaper.set(wallPath, function (err) {
         console.log('Wallpaper updated.');
         done();
     });
@@ -63,33 +68,49 @@ var saveAndSetBingWallpaper = function () {
 
     var argv = require('minimist')(process.argv.slice(2));
 
-    // Today's wallpaper path
+    // Today's wallpaper filename
     var currentDate = new Date().toISOString().substr(0, 10);
-    var wallpaperPath = __dirname + '/wallpapers/' + currentDate + '.jpg';
+    var wallFilename = currentDate + '.jpg';
 
-    // We don't download twice the same wallpaper
-    if (fs.existsSync(wallpaperPath)) {
-        console.log('Today\'s wallpaper already exists.');
-        setWallpaper(wallpaperPath);
-    }
-    else {
-        console.log('Dowloading wallpaper in ' + wallpaperPath + '...');
+    var onWallDirExist = function (wallDirectory) {
+        var wallPath = wallDirectory + '/' + wallFilename;
 
-        getBingWallpaper(function(err, wallpaper) {
+        // We don't download twice the same wallpaper
+        if (fs.existsSync(wallPath)) {
+            console.log('Today\'s wallpaper already exists.');
+            setWallpaper(wallPath);
+        }
+        else {
+            console.log('Dowloading wallpaper in ' + wallPath + '...');
 
-            download(wallpaper.url,  wallpaperPath, function() {
-                console.log('Wallpaper saved.');
-                setWallpaper(wallpaperPath, function () {
+            getBingWallpaper(function(err, wallpaper) {
 
-                    // If --notify is passed, we show the copyright
-                    if (argv.notify) {
-                        notifier.notify({
-                            title: 'Wallpaper copyright',
-                            message: wallpaper.copyright,
-                        });
-                    }
+                download(wallpaper.url,  wallPath, function() {
+                    console.log('Wallpaper saved.');
+                    setWallpaper(wallPath, function () {
+
+                        // If --notify is passed, we show the copyright
+                        if (argv.notify) {
+                            notifier.notify({
+                                title: 'Wallpaper copyright',
+                                message: wallpaper.copyright,
+                            });
+                        }
+                    });
                 });
             });
+        }
+    };
+
+    // If --directory is not set, the wallpapers go in ~/.bing-wallpapers
+    var wallDirectory;
+    if (argv.directory && fs.existsSync(argv.directory)) {
+        onWallDirExist(argv.directory);
+    }
+    else {
+        wallDirectory = getUserHome() + '/.bing-wallpapers';
+        fs.mkdir(wallDirectory, function () {
+            onWallDirExist(wallDirectory);
         });
     }
 };
