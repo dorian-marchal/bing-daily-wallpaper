@@ -19,6 +19,7 @@
   "dependencies": {
     "request": "^2.55.0",
     "wallpaper": "^1.0.0",
-    "minimist": "~1.1.1"
+    "minimist": "~1.1.1",
+    "node-notifier": "~4.2.1"
   }
 }
