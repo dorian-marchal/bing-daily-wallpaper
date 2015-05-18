@@ -1,8 +1,11 @@
 {
-  "name": "bing-wallpaper",
-  "version": "1.0.0",
-  "description": "A simple node script to run at boot time that set your wallpaper to the Bing image of the day.",
-  "main": "bw.js",
+  "name": "bing-wall",
+  "version": "1.2.0",
+  "description": "A simple command to run at boot time that set your wallpaper to the Bing image of the day.",
+  "main": "index.js",
+  "bin": {
+    "bing-wall": "bin/bing-wall"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
