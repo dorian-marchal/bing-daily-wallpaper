@@ -5,21 +5,16 @@ A simple node script that sets your wallpaper to the Bing image of the day.
 ### Installation
 
 ```bash
-git clone https://github.com/dorian-marchal/bing-wallpaper
-cd bing-wallpaper
-make install
+sudo npm install -g bing-wall
 ```
 
 ### Usage
 
 ```bash
-# from bing-wallpaper directory
-node bw.js
+bing-wall
 ```
 
-You can run this command at boot time if you want to change your wallpaper everyday : `node /path/to/bing-wallpaper/bw.js`.
-
-All the downloaded wallpapers are stored in `/path/to/bing-wallpaper/wallpapers/yyyy-mm-dd.jpg`.
+You can run this command at boot time if you want to change your wallpaper everyday.
 
 
 ### Options
@@ -29,7 +24,15 @@ All the downloaded wallpapers are stored in `/path/to/bing-wallpaper/wallpapers/
   Use --notify to show a native notification with the wallpaper copyright
 
   ```bash
-  node bw.js --notify
+  bing-wall --notify
   ```
 
   ![Notification](https://cloud.githubusercontent.com/assets/6225979/7679455/1a7bd472-fd5d-11e4-937b-10cee4c48239.png)
+
+- __--directory `/path/to/dir`__
+
+  Use --directory to choose the directory in wich you want your wallpapers to be saved. By default, they will be saved in `$HOME/.bing-wallpapers`.
+
+  ```bash
+  bing-wall --directory /tmp
+  ```
