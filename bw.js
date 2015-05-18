@@ -3,6 +3,7 @@
 var request = require('request');
 var fs = require('fs');
 var wallpaper = require('wallpaper');
+var argv = require('minimist')(process.argv.slice(2));
 
 /**
  * Download a file and store it on the filesystem.
@@ -16,9 +17,13 @@ var download = function (uri, filename, callback){
 /**
  * Replace the current wallpaper with the one in parameter.
  */
-var setWallpaper = function (wallpaperPath) {
+var setWallpaper = function (wallpaperPath, done) {
+
+    done = done || function () {};
+
     wallpaper.set(wallpaperPath, function (err) {
         console.log('Wallpaper updated.');
+        done();
     });
 };
 
@@ -41,9 +46,12 @@ var getBingWallpaper = function (done) {
                 done(new Error('Bad format for Bing API response.'));
             }
 
-            var imageUrl = 'http://bing.com' + res.images[0].url;
+            var image = {
+                url: 'http://bing.com' + res.images[0].url,
+                copyright: res.images[0].copyright,
+            };
 
-            done(null, imageUrl);
+            done(null, image);
         }
         catch (err) {
             done(err);
@@ -64,11 +72,17 @@ if (fs.existsSync(wallpaperPath)) {
 else {
     console.log('Dowloading wallpaper in ' + wallpaperPath + '...');
 
-    getBingWallpaper(function(err, wallpaperUrl) {
+    getBingWallpaper(function(err, wallpaper) {
 
-        download(wallpaperUrl,  wallpaperPath, function() {
+        download(wallpaper.url,  wallpaperPath, function() {
             console.log('Wallpaper saved.');
-            setWallpaper(wallpaperPath);
+            setWallpaper(wallpaperPath, function () {
+
+                // If --notify is passed, we show the copyright
+                if (argv.notify) {
+                    console.log(wallpaper.copyright);
+                }
+            });
         });
     });
 }
