@@ -4,8 +4,6 @@ var request = require('request');
 var fs = require('fs');
 var wallpaper = require('wallpaper');
 var notifier = require('node-notifier');
-var argv = require('minimist')(process.argv.slice(2));
-
 /**
  * Download a file and store it on the filesystem.
  */
@@ -61,32 +59,39 @@ var getBingWallpaper = function (done) {
     });
 };
 
-// Today's wallpaper path
-var currentDate = new Date().toISOString().substr(0, 10);
-var wallpaperPath = __dirname + '/wallpapers/' + currentDate + '.jpg';
+var saveAndSetBingWallpaper = function () {
 
-// We don't download twice the same wallpaper
-if (fs.existsSync(wallpaperPath)) {
-    console.log('Today\'s wallpaper already exists.');
-    setWallpaper(wallpaperPath);
-}
-else {
-    console.log('Dowloading wallpaper in ' + wallpaperPath + '...');
+    var argv = require('minimist')(process.argv.slice(2));
 
-    getBingWallpaper(function(err, wallpaper) {
+    // Today's wallpaper path
+    var currentDate = new Date().toISOString().substr(0, 10);
+    var wallpaperPath = __dirname + '/wallpapers/' + currentDate + '.jpg';
 
-        download(wallpaper.url,  wallpaperPath, function() {
-            console.log('Wallpaper saved.');
-            setWallpaper(wallpaperPath, function () {
+    // We don't download twice the same wallpaper
+    if (fs.existsSync(wallpaperPath)) {
+        console.log('Today\'s wallpaper already exists.');
+        setWallpaper(wallpaperPath);
+    }
+    else {
+        console.log('Dowloading wallpaper in ' + wallpaperPath + '...');
 
-                // If --notify is passed, we show the copyright
-                if (argv.notify) {
-                    notifier.notify({
-                        title: 'Wallpaper copyright',
-                        message: wallpaper.copyright,
-                    });
-                }
+        getBingWallpaper(function(err, wallpaper) {
+
+            download(wallpaper.url,  wallpaperPath, function() {
+                console.log('Wallpaper saved.');
+                setWallpaper(wallpaperPath, function () {
+
+                    // If --notify is passed, we show the copyright
+                    if (argv.notify) {
+                        notifier.notify({
+                            title: 'Wallpaper copyright',
+                            message: wallpaper.copyright,
+                        });
+                    }
+                });
             });
         });
-    });
-}
+    }
+};
+
+module.exports = saveAndSetBingWallpaper;
