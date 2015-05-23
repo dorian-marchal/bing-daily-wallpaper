@@ -1,24 +1,24 @@
 {
-  "name": "bing-wall",
+  "name": "bing-daily-wallpaper",
   "version": "1.2.0",
   "description": "A simple command to run at boot time that set your wallpaper to the Bing image of the day.",
   "main": "index.js",
   "bin": {
-    "bing-wall": "bin/bing-wall"
+    "bing-daily-wallpaper": "bin/bing-daily-wallpaper"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dorian-marchal/bing-wallpaper.git"
+    "url": "https://github.com/dorian-marchal/bing-daily-wallpaper.git"
   },
   "author": "dorian-marchal",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dorian-marchal/bing-wallpaper/issues"
+    "url": "https://github.com/dorian-marchal/bing-daily-wallpaper/issues"
   },
-  "homepage": "https://github.com/dorian-marchal/bing-wallpaper",
+  "homepage": "https://github.com/dorian-marchal/bing-daily-wallpaper",
   "dependencies": {
     "request": "^2.55.0",
     "wallpaper": "^1.0.0",
