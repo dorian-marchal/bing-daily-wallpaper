@@ -1,6 +1,6 @@
 {
   "name": "bing-daily-wallpaper",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A simple command to run at boot time that set your wallpaper to the Bing image of the day.",
   "main": "index.js",
   "bin": {
