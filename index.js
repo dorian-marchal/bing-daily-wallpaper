@@ -1,118 +1,75 @@
 'use strict';
 
 var request = require('request');
-var fs = require('fs');
-var wallpaper = require('wallpaper');
-var notifier = require('node-notifier');
+var DailyWallpaper = require('daily-wallpaper');
 
-var getUserHome = function () {
-    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+
+var BingDailyWallpaper = function () {
+
+    var that = this;
+    this.dailyWallpaper = new DailyWallpaper();
+
+    this.dailyWallpaper.getWallpaperSource = function (done) {
+        that._getBingWallpaper(function (err, image) {
+            if (err) {
+                return done(err);
+            }
+            return done(null, {
+                url: 'http://www.bing.com' + image.url,
+                extension: 'jpg',
+            });
+        });
+    };
 };
 
-/**
- * Download a file and store it on the filesystem.
- */
-var download = function (uri, filename, callback){
-    request.head(uri, function(err, res, body){
-        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-    });
-};
+BingDailyWallpaper.prototype = {
 
-/**
- * Replace the current wallpaper with the one in parameter.
- */
-var setWallpaper = function (wallPath, done) {
+    constructor: BingDailyWallpaper,
 
-    done = done || function () {};
-
-    wallpaper.set(wallPath, function (err) {
-        console.log('Wallpaper updated.');
-        done();
-    });
-};
-
-/**
- * Call the callback with the wallpaper url when done
- * (and with an optionnal error as first parameter).
- */
-var getBingWallpaper = function (done) {
-    request('http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1', function (error, response, body) {
-
-        if (error || response.statusCode !== 200) {
-            done(new Error('Error while accessing the Bing API.'));
-            return;
-        }
-
-        try {
-            var res = JSON.parse(body);
-
-            if (typeof res.images === 'undefined' || res.images.length === 0) {
-                done(new Error('Bad format for Bing API response.'));
+    /**
+     * Set the current bing wallpaper as wallpaper
+     */
+    setBingDailyWallpaper: function (done) {
+        this.dailyWallpaper.setDailyWallpaper(function (err) {
+            if (err) {
+                return done(err);
             }
 
-            var image = {
-                url: 'http://bing.com' + res.images[0].url,
-                copyright: res.images[0].copyright,
-            };
+            return done();
+        });
+    },
 
-            done(null, image);
-        }
-        catch (err) {
-            done(err);
-        }
+    setDirectory: function (directory) {
+        this.dailyWallpaper.setDirectory(directory);
+    },
 
-    });
-};
+    /**
+     * Call the callback with the wallpaper url when done
+     * (and with an optionnal error as first parameter).
+     */
+    _getBingWallpaper: function (done) {
+        request('http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1', function (error, response, body) {
+            if (error || response.statusCode !== 200) {
+                return done(new Error('Error while accessing the Bing API.'));
+            }
 
-var saveAndSetBingWallpaper = function () {
+            var res;
 
-    var argv = require('minimist')(process.argv.slice(2));
+            try {
+                res = JSON.parse(body);
+            }
+            catch (err) {
+                return done(err);
+            }
 
-    // Today's wallpaper filename
-    var currentDate = new Date().toISOString().substr(0, 10);
-    var wallFilename = currentDate + '.jpg';
+            if (typeof res.images === 'undefined' || res.images.length === 0) {
+                return done(new Error('Bad format for Bing API response.'));
+            }
 
-    var onWallDirExist = function (wallDirectory) {
-        var wallPath = wallDirectory + '/' + wallFilename;
-
-        // We don't download twice the same wallpaper
-        if (fs.existsSync(wallPath)) {
-            console.log('Today\'s wallpaper already exists.');
-            setWallpaper(wallPath);
-        }
-        else {
-            console.log('Dowloading wallpaper in ' + wallPath + '...');
-
-            getBingWallpaper(function(err, wallpaper) {
-
-                download(wallpaper.url,  wallPath, function() {
-                    console.log('Wallpaper saved.');
-                    setWallpaper(wallPath, function () {
-
-                        // If --notify is passed, we show the copyright
-                        if (argv.notify) {
-                            notifier.notify({
-                                title: 'Wallpaper copyright',
-                                message: wallpaper.copyright,
-                            });
-                        }
-                    });
-                });
-            });
-        }
-    };
-
-    // If --directory is not set, the wallpapers go in ~/.bing-wallpapers
-    var wallDirectory;
-    if (argv.directory && fs.existsSync(argv.directory)) {
-        onWallDirExist(argv.directory);
-    }
-    else {
-        wallDirectory = getUserHome() + '/.bing-wallpapers';
-        fs.mkdir(wallDirectory, function () {
-            onWallDirExist(wallDirectory);
+            return done(null, res.images[0]);
         });
     }
+
 };
 
-module.exports = saveAndSetBingWallpaper;
+module.exports = BingDailyWallpaper;
