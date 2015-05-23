@@ -1,0 +1,36 @@
+'use strict';
+
+var fs = require('fs');
+var BingDailyWallpaper = require('../index.js');
+var argv = require('minimist')(process.argv.slice(2));
+
+var getUserHome = function () {
+    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+};
+
+var bingWall = new BingDailyWallpaper();
+
+var getWallpaperDirectory = function (done) {
+    // If --directory is not set, the wallpapers go in ~/.bing-wallpapers
+    var wallDirectory;
+    if (argv.directory && fs.existsSync(argv.directory)) {
+        return done(argv.directory);
+    }
+    else {
+        wallDirectory = getUserHome() + '/.bing-wallpapers';
+        fs.mkdir(wallDirectory, function () {
+            return done(wallDirectory);
+        });
+    }
+};
+
+getWallpaperDirectory(function (wallDirectory) {
+    bingWall.setDirectory(wallDirectory);
+
+    bingWall.setBingDailyWallpaper(function (err) {
+        if (err) {
+            throw err;
+        }
+        console.log('Wallpaper updated.');
+    });
+});

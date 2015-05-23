@@ -1,3 +1,17 @@
 {
-"node" : true
+"node" : true,
+"globalstrict": true,
+"esnext": true,
+"quotmark": "single",
+"curly": true,
+"undef": true,
+"unused": true,
+"globals": {
+    "beforeAll": true,
+    "beforeEach": true,
+    "it": true,
+    "expect": true,
+    "afterAll": true,
+    "describe": true
+}
 }

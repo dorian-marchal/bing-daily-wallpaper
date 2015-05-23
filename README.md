@@ -1,17 +1,17 @@
-# bing-wallpaper
+# bing-daily-wallpaper
 
 A simple node script that sets your wallpaper to the Bing image of the day.
 
 ### Installation
 
 ```bash
-sudo npm install -g bing-wall
+sudo npm install -g bing-daily-wallpaper
 ```
 
 ### Usage
 
 ```bash
-bing-wall
+bing-daily-wallpaper
 ```
 
 You can run this command at boot time if you want to change your wallpaper everyday.
@@ -24,7 +24,7 @@ You can run this command at boot time if you want to change your wallpaper every
   Use --notify to show a native notification with the wallpaper copyright
 
   ```bash
-  bing-wall --notify
+  bing-daily-wallpaper --notify
   ```
 
   ![Notification](https://cloud.githubusercontent.com/assets/6225979/7679455/1a7bd472-fd5d-11e4-937b-10cee4c48239.png)
@@ -34,5 +34,5 @@ You can run this command at boot time if you want to change your wallpaper every
   Use --directory to choose the directory in wich you want your wallpapers to be saved. By default, they will be saved in `$HOME/.bing-wallpapers`.
 
   ```bash
-  bing-wall --directory /tmp
+  bing-daily-wallpaper --directory /tmp
   ```
