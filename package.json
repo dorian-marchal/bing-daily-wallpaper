@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/dorian-marchal/bing-daily-wallpaper",
   "dependencies": {
-    "daily-wallpaper": "^0.1.0",
-    "minimist": "~1.1.1",
-    "request": "^2.55.0"
+    "daily-wallpaper": "^0.2.1",
+    "minimist": "~1.2.0",
+    "request": "^2.88.0"
   }
 }
