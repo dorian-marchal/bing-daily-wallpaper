@@ -1,38 +1,41 @@
 #!/usr/bin/env node
 
-'use strict';
+"use strict";
 
-var fs = require('fs');
-var BingDailyWallpaper = require('../index.js');
-var argv = require('minimist')(process.argv.slice(2));
+const { promises: fs, constants } = require("fs");
+const path = require("path");
+const setBingDailyWallpaper = require("../index.js");
+const argv = require("minimist")(process.argv.slice(2));
 
-var getUserHome = function () {
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+const getUserHome = function () {
+  return process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"];
 };
 
-var bingWall = new BingDailyWallpaper();
-
-var getWallpaperDirectory = function (done) {
-  // If --directory is not set, the wallpapers go in ~/.bing-wallpapers
-  var wallDirectory;
-  if (argv.directory && fs.existsSync(argv.directory)) {
-    return done(argv.directory);
-  }
-  else {
-    wallDirectory = getUserHome() + '/.bing-wallpapers';
-    fs.mkdir(wallDirectory, function () {
-      return done(wallDirectory);
-    });
-  }
-};
-
-getWallpaperDirectory(function (wallDirectory) {
-  bingWall.setDirectory(wallDirectory);
-
-  bingWall.setBingDailyWallpaper(function (err) {
-    if (err) {
+async function ensureWallpaperDirectoryExists() {
+  // If --directory is not set, wallpapers go in ~/.bing-wallpapers
+  const directory =
+    argv.directory || path.join(getUserHome(), ".bing-wallpapers");
+  try {
+    await fs.access(directory, constants.W_OK);
+    return directory;
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      console.error(`Cannot write in ${directory}`);
       throw err;
     }
-    console.log('Wallpaper updated.');
-  });
-});
+  }
+
+  try {
+    await fs.mkdir(directory);
+    return directory;
+  } catch (err) {
+    console.error("Could not create wallpaper directory");
+    throw err;
+  }
+}
+
+(async function () {
+  const directory = await ensureWallpaperDirectoryExists();
+  await setBingDailyWallpaper(directory);
+  console.log("Wallpaper updated.");
+})();
