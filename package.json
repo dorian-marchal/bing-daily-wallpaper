@@ -24,8 +24,8 @@
   "homepage": "https://github.com/dorian-marchal/bing-daily-wallpaper",
   "dependencies": {
     "daily-wallpaper": "^0.2.1",
-    "minimist": "~1.2.5",
-    "node-fetch": "^2.6.5"
+    "minimist": "~1.2.7",
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
